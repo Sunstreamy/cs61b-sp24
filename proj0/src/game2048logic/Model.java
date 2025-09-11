@@ -217,6 +217,7 @@ public class Model {
             Tile above = this.board.tile(x, nextY);
             if (currTile.value() == above.value() && !above.wasMerged()) {
                 targetY = nextY;
+                this.score += myValue * 2;
             }
         }
 
