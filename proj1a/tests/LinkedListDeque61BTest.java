@@ -118,11 +118,11 @@ public class LinkedListDeque61BTest {
         lld1.addLast(8);
         lld1.addLast(6);
 
-        Integer f = lld1.get(0);
-        Integer m = lld1.get(lld1.size() / 2);
-        Integer b = lld1.get(lld1.size() - 1);
-        Integer tooB = lld1.get(12345);
-        Integer tooM = lld1.get(-4);
+        Integer f = lld1.getRecursive(0);
+        Integer m = lld1.getRecursive(lld1.size() / 2);
+        Integer b = lld1.getRecursive(lld1.size() - 1);
+        Integer tooB = lld1.getRecursive(12345);
+        Integer tooM = lld1.getRecursive(-4);
 
         assertThat(f).isEqualTo(1);
         assertThat(m).isEqualTo(3);
@@ -130,7 +130,7 @@ public class LinkedListDeque61BTest {
         assertThat(tooB).isNull();
         assertThat(tooM).isNull();
 
-        Integer z = lld2.get(0);
+        Integer z = lld2.getRecursive(0);
         assertThat(z).isNull();
     }
 
@@ -176,6 +176,18 @@ public class LinkedListDeque61BTest {
         assertThat(removedItem2).isNull();
         assertThat(lld2.toList()).isEmpty();
         assertThat(lld2.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void addAfterRemoveToEmptyTest() {
+        Deque61B<String> lld1 = new LinkedListDeque61B<>();
+        lld1.addLast("A");
+        lld1.addLast("B");
+        lld1.removeFirst();
+        lld1.removeFirst();
+        assertThat(lld1.toList()).isEmpty();
+        lld1.addFirst("C");
+        assertThat(lld1.toList()).containsExactly("C").inOrder();
     }
 
 
