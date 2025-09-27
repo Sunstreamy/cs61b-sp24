@@ -34,13 +34,18 @@ public class LinkedListDeque61BTest {
     @Test
     /** In this test, we use only one assertThat statement. IMO this test is just as good as addFirstTestBasic.
      *  In other words, the tedious work of adding the extra assertThat statements isn't worth it. */
-    public void addLastTestBasic() {
+    public void addLastTestBasic_RemovedItemPreWrong() {
         Deque61B<String> lld1 = new LinkedListDeque61B<>();
 
         lld1.addLast("front"); // after this call we expect: ["front"]
         lld1.addLast("middle"); // after this call we expect: ["front", "middle"]
         lld1.addLast("back"); // after this call we expect: ["front", "middle", "back"]
-        assertThat(lld1.toList()).containsExactly("front", "middle", "back").inOrder();
+        lld1.removeFirst();
+        lld1.removeFirst();
+        lld1.removeFirst();
+        lld1.addLast("firstAgain");
+        lld1.addLast(("middleAgain"));
+        assertThat(lld1.toList()).containsExactly("firstAgain", "middleAgain").inOrder();
     }
 
     @Test

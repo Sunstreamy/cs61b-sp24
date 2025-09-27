@@ -84,6 +84,10 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
         size -= 1;
         Node<T> nodeToRemove = sentinel.next;
         sentinel.next = nodeToRemove.next;
+
+        // 2. ==> 让新的第一个节点指向 sentinel <== (新增的修复代码)
+        sentinel.next.prev = sentinel;
+
         nodeToRemove.prev = null;
         nodeToRemove.next = null;
 
