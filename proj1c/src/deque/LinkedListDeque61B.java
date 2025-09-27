@@ -132,6 +132,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
         size -= 1;
         Node<T> nodeToRemove = sentinel.next;
         sentinel.next = nodeToRemove.next;
+        sentinel.next.prev = sentinel;
         nodeToRemove.prev = null;
         nodeToRemove.next = null;
 
