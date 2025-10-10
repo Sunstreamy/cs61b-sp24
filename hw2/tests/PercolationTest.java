@@ -13,7 +13,7 @@ public class PercolationTest {
      * (1) OPEN: isOpen() returns true, isFull() returns false
      * <p>
      * (2) INVALID: isOpen() returns false, isFull() returns true
-     *              (This should not happen! Only open cells should be full.)
+     * (This should not happen! Only open cells should be full.)
      * <p>
      * (3) FULL: isOpen() returns true, isFull() returns true
      * <p>
@@ -81,8 +81,41 @@ public class PercolationTest {
     // TODO: Using the given tests above as a template,
     //       write some more tests and delete the fail() line
     @Test
-    public void yourFirstTestHere() {
-        fail("Did you write your own tests?");
+    public void testIsOpenAndNumberOfOpenSites() {
+        int N = 3;
+        Percolation p = new Percolation(N);
+        assertThat(p.numberOfOpenSites()).isEqualTo(0);
+        assertThat(p.isOpen(1, 1)).isFalse();
+        p.open(1, 1);
+        assertThat(p.numberOfOpenSites()).isEqualTo(1);
+        p.open(1, 1);
+        assertThat(p.numberOfOpenSites()).isEqualTo(1);
+        assertThat(p.isOpen(1, 1)).isTrue();
+    }
+
+    @Test
+    public void testOpenConnectsToNeighborAndMakesItFull() {
+        // 创建一个3x3的渗透系统
+        Percolation p = new Percolation(3);
+
+        // 打开 (0, 1)，它在第一行
+        p.open(0, 1);
+
+        // 此时，(0, 1) 自身应该是 full 的，因为它在第一行且被打开了
+        // 这一步也顺便测试了我们的虚拟顶部节点设计是否正确
+        assertThat(p.isFull(0, 1)).isTrue();
+
+        // 现在打开 (0, 1) 正下方的格子 (1, 1)
+        p.open(1, 1);
+
+        // 因为 (1, 1) 和 (0, 1) 是相邻的、打开的格子，
+        // 我们期望 open(1, 1) 的实现已经把它们 union 在了一起。
+        // 又因为 (0, 1) 是 full 的（即连接到了虚拟顶部），
+        // 所以 (1, 1) 现在也应该是 full 的。
+        assertThat(p.isFull(1, 1)).isTrue();
+
+        // 作为对比，我们断言一个不相关的、未打开的格子不是 full
+        assertThat(p.isFull(2, 2)).isFalse();
     }
 
 }
