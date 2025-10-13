@@ -85,7 +85,67 @@ public class UnionFindTest {
      * Specifically, you may want to write a test for path compression and to check for the correctness
      * of all methods in your implementation.
      */
+    @Test
+    public void testUnionTieBreaking() {
+        UnionFind uf = new UnionFind(4);
+        // {0}, {1}, {2}, {3}
 
+        uf.union(0, 1); // {0, 1}, {2}, {3}. root is 1, size is 2
+        uf.union(2, 3); // {0, 1}, {2, 3}. root is 3, size is 2
+
+        // 两个集合大小相等，都是2
+        // 根据规则，v1(0)的根(1)应该连接到v2(2)的根(3)上
+        // 所以，parent(1) 应该等于 3
+        uf.union(0, 2);
+
+        // 断言 v1 的根现在是 v2 的根
+        assertThat(uf.parent(1)).isEqualTo(3);
+
+        // 断言新集合的大小是 4
+        assertThat(uf.sizeOf(0)).isEqualTo(4);
+        assertThat(uf.sizeOf(3)).isEqualTo(4);
+    }
+
+    @Test
+    public void testPathCompressionEffect() {
+        UnionFind uf = new UnionFind(10);
+
+        // 目标：构建一个路径 9 -> 8 -> 7 -> 6(root)
+        // 我们需要绕过 WQU 来手动构建它，这很难。
+        // 所以我们换一种思路：我们可以构建一个允许存在长路径的结构。
+
+        // 构建两棵树
+        // Tree 1: {0,1,2,3}, root = 0 (高度 1)
+        uf.union(1, 0);
+        uf.union(2, 0);
+        uf.union(3, 0);
+
+        // Tree 2: {4,5,6,7}, root = 4 (高度 1)
+        uf.union(5, 4);
+        uf.union(6, 4);
+        uf.union(7, 4);
+
+        // 连接两棵树，root 0 会连接到 root 4
+        uf.union(0, 4); // 新树大小为8，根为4
+
+        // 现在，0 的父亲是 4。1,2,3 的父亲仍然是 0
+        // 所以，find(1) 的路径是 1 -> 0 -> 4
+        assertThat(uf.parent(1)).isEqualTo(0);
+        assertThat(uf.parent(0)).isEqualTo(4);
+
+        // 调用 find(1)。这会触发路径压缩。
+        int root = uf.find(1);
+
+        // 验证根是 4
+        assertThat(root).isEqualTo(4);
+
+        // 验证路径压缩的效果：
+        // 1 在寻找根的过程中，它的父指针应该被直接修改为根 4。
+        assertThat(uf.parent(1)).isEqualTo(4);
+
+        // 路径上的 0 的父指针应该保持为 4
+        assertThat(uf.parent(0)).isEqualTo(4);
+    }
 }
 
 
