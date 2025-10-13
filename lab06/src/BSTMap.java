@@ -1,5 +1,4 @@
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
@@ -120,7 +119,18 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public Set<K> keySet() {
-        return Set.of();
+        Set<K> keys = new TreeSet<>();
+        keySetHelper(root, keys);
+        return keys;
+    }
+
+    private void keySetHelper(Node n, Set<K> currentKeys) {
+        if (n == null) {
+            return;
+        }
+        keySetHelper(n.left, currentKeys);
+        currentKeys.add(n.key);
+        keySetHelper(n.right, currentKeys);
     }
 
     /**
@@ -133,7 +143,47 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public V remove(K key) {
-        return null;
+        if (get(key) == null) {
+            return null;
+        }
+        V valueToRemove = get(key);
+        root = removeHelper(root, key);
+        size--;
+        return valueToRemove;
+    }
+
+    private Node removeHelper(Node n, K key) {
+        if (n == null) {
+            return null;
+        }
+        int cmp = key.compareTo(n.key);
+        if (cmp < 0) {
+            n.left = removeHelper(n.left, key);
+        } else if (cmp > 0) {
+            n.right = removeHelper(n.right, key);
+        } else {
+            if (n.left == null && n.right == null) {
+                return null; // 直接删除它，返回 null 作为新的子树
+            }
+            if (n.left == null) {
+                return n.right;
+            }
+            if (n.right == null) {
+                return n.left;
+            }
+            Node successor = findMin(n.right);
+            n.key = successor.key;
+            n.val = successor.val;
+            n.right = removeHelper(n.right, successor.key);
+        }
+        return n;
+    }
+
+    private Node findMin(Node n) {
+        if (n.left == null) {
+            return n;
+        }
+        return findMin(n.left);
     }
 
     /**
@@ -143,6 +193,6 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
      */
     @Override
     public Iterator<K> iterator() {
-        return null;
+        return keySet().iterator();
     }
 }

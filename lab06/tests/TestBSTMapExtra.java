@@ -5,7 +5,9 @@ import org.junit.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 
-/** Tests of optional parts of lab 7. */
+/**
+ * Tests of optional parts of lab 7.
+ */
 public class TestBSTMapExtra {
 
     /*
@@ -23,6 +25,33 @@ public class TestBSTMapExtra {
         Set<String> keySet = b.keySet();
         assertThat(values).containsExactlyElementsIn(keySet).inOrder();
         assertThat(keySet).containsExactlyElementsIn(values).inOrder();
+    }
+
+    @Test
+    public void testIterator() {
+        BSTMap<String, Integer> b = new BSTMap<>();
+        TreeSet<String> expectedKeys = new TreeSet<>();
+        
+        expectedKeys.add("a");
+        expectedKeys.add("b");
+        expectedKeys.add("c");
+        expectedKeys.add("d");
+        expectedKeys.add("e");
+
+        // 插入一些乱序的 key
+        b.put("c", 3);
+        b.put("a", 1);
+        b.put("e", 5);
+        b.put("b", 2);
+        b.put("d", 4);
+
+        TreeSet<String> actualKeys = new TreeSet<>();
+
+        for (String key : b) { // <--- 这一行能编译和运行，就证明 iterator() 至少能工作
+            actualKeys.add(key);
+        }
+        assertThat(actualKeys).isEqualTo(expectedKeys);
+        assertThat(actualKeys).containsExactly("a", "b", "c", "d", "e").inOrder();
     }
 
     /* Remove Test
@@ -60,12 +89,12 @@ public class TestBSTMapExtra {
      */
     @Test
     public void testRemoveThreeCases() {
-        BSTMap<String,String> q = new BSTMap<>();
-        q.put("c","a");
-        q.put("b","a");
-        q.put("a","a");
-        q.put("d","a");
-        q.put("e","a");                         // a b c d e
+        BSTMap<String, String> q = new BSTMap<>();
+        q.put("c", "a");
+        q.put("b", "a");
+        q.put("a", "a");
+        q.put("d", "a");
+        q.put("e", "a");                         // a b c d e
         assertThat(q.remove("e")).isNotNull();      // a b c d
         assertThat(q.containsKey("a")).isTrue();
         assertThat(q.containsKey("b")).isTrue();
@@ -75,7 +104,7 @@ public class TestBSTMapExtra {
         assertThat(q.containsKey("a")).isTrue();
         assertThat(q.containsKey("b")).isTrue();
         assertThat(q.containsKey("d")).isTrue();
-        q.put("f","a");                         // a b d f
+        q.put("f", "a");                         // a b d f
         assertThat(q.remove("d")).isNotNull();      // a b f
         assertThat(q.containsKey("a")).isTrue();
         assertThat(q.containsKey("b")).isTrue();
