@@ -1,5 +1,6 @@
 package ngrams;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -11,9 +12,11 @@ import java.util.TreeMap;
  */
 public class TimeSeries extends TreeMap<Integer, Double> {
 
-    /** If it helps speed up your code, you can assume year arguments to your NGramMap
+    /**
+     * If it helps speed up your code, you can assume year arguments to your NGramMap
      * are between 1400 and 2100. We've stored these values as the constants
-     * MIN_YEAR and MAX_YEAR here. */
+     * MIN_YEAR and MAX_YEAR here.
+     */
     public static final int MIN_YEAR = 1400;
     public static final int MAX_YEAR = 2100;
 
@@ -30,15 +33,19 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      */
     public TimeSeries(TimeSeries ts, int startYear, int endYear) {
         super();
-        // TODO: Fill in this constructor.
+        for (Integer year : ts.years()) {
+            if (year >= startYear && year <= endYear) {
+                Double value = ts.get(year);
+                this.put(year, value);
+            }
+        }
     }
 
     /**
      * Returns all years for this TimeSeries (in any order).
      */
     public List<Integer> years() {
-        // TODO: Fill in this method.
-        return null;
+        return new ArrayList<>(this.keySet());
     }
 
     /**
@@ -46,36 +53,56 @@ public class TimeSeries extends TreeMap<Integer, Double> {
      * Must be in the same order as years().
      */
     public List<Double> data() {
-        // TODO: Fill in this method.
-        return null;
+        return new ArrayList<>(this.values());
     }
 
     /**
      * Returns the year-wise sum of this TimeSeries with the given TS. In other words, for
      * each year, sum the data from this TimeSeries with the data from TS. Should return a
      * new TimeSeries (does not modify this TimeSeries).
-     *
+     * <p>
      * If both TimeSeries don't contain any years, return an empty TimeSeries.
      * If one TimeSeries contains a year that the other one doesn't, the returned TimeSeries
      * should store the value from the TimeSeries that contains that year.
      */
     public TimeSeries plus(TimeSeries ts) {
-        // TODO: Fill in this method.
-        return null;
+        TimeSeries ans = new TimeSeries();
+        ans.putAll(this);
+        for (Integer year : ts.keySet()) {
+            Double tsValue = ts.get(year);
+            if (ans.containsKey(year)) {
+                Double ansValue = ans.get(year);
+                ans.put(year, ansValue + tsValue);
+            } else {
+                ans.put(year, tsValue);
+            }
+        }
+        return ans;
     }
 
     /**
      * Returns the quotient of the value for each year this TimeSeries divided by the
      * value for the same year in TS. Should return a new TimeSeries (does not modify this
      * TimeSeries).
-     *
+     * <p>
      * If TS is missing a year that exists in this TimeSeries, throw an
      * IllegalArgumentException.
      * If TS has a year that is not in this TimeSeries, ignore it.
      */
     public TimeSeries dividedBy(TimeSeries ts) {
-        // TODO: Fill in this method.
-        return null;
+        TimeSeries ans = new TimeSeries();
+        ans.putAll(this);
+        for (Integer year : ans.keySet()) {
+            if (ts.containsKey(year)) {
+                double thisValue = ans.get(year);
+                double tsValue = ts.get(year);
+                double quotient = thisValue / tsValue;
+                ans.put(year, quotient);
+            } else {
+                throw new IllegalArgumentException("Mia~");
+            }
+        }
+        return ans;
     }
 
     // TODO: Add any private helper methods.
